@@ -23,7 +23,7 @@ def quadrant_chart(input_val: float, input_aro: float, xtick_labels=None, ytick_
     ax.set_xlim(-1.2, 1.2)
     ax.set_ylim(-1.2, 1.2)
 
-    ax.scatter(x=data['x'], y=data['y'], c=input_val, cmap = 'Spectral', edgecolor='darkblue', s=200,
+    ax.scatter(x=data['x'], y=data['y'], c=input_aro, cmap = 'Spectral', edgecolor='darkblue', s=200,
     zorder=99)
     ax.axvline(0, c='k', lw=1)
     ax.axhline(0, c='k', lw=1)
