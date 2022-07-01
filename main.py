@@ -81,7 +81,8 @@ def process_func(
 
     return y
 
-
+#define constants
+SAMPLING_RATE = 16000
 
 # load model from hub
 device = 'cpu'
@@ -90,15 +91,14 @@ processor = Wav2Vec2Processor.from_pretrained(model_name)
 model = EmotionModel.from_pretrained(model_name)
 
 # dummy signal
-SAMPLING_RATE = 16000
-signal0 = np.zeros((1, SAMPLING_RATE), dtype=np.float32)
+signal_dummy = np.zeros((1, SAMPLING_RATE), dtype=np.float32)
 
 # load wav file as signal
 # file = load("data/msp_test/MSP-PODCAST_0001_0049.wav", sr=16000)
 # file = [file[0]]
 # signal = np.array(file ,dtype=np.float32)
 
-#load in multiple wav files into a list and then run through the model
+# load all wav files in a directory into a list
 files = glob.glob("data/msp_test/*.wav")
 signals = [[] for i in range(len(files))] 
 i = 0
@@ -109,16 +109,16 @@ for file in files:
     signals[i].append(current_signal)
     i += 1
 
-
+# process loaded signals
 for signal in signals:
     print(process_func(signal, sampling_rate=SAMPLING_RATE))
 
 
-#print(process_func(signal0, sampling_rate))
+#print(process_func(signal_dummy, sampling_rate))
 #  Arousal    dominance valence
 # [[0.5460759 0.6062269 0.4043165]]
 
-process_func(signal, sampling_rate, embeddings=True)
+process_func(signal, SAMPLING_RATE, embeddings=True)
 # Pooled hidden states of last transformer layer
 # [[-0.00752167  0.0065819  -0.00746339 ...  0.00663631  0.00848747
 #   0.00599209]]
