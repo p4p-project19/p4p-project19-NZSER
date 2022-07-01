@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import torch.nn as nn
+import os, glob
 from scipy.io.wavfile import read
 from librosa import load
 from transformers import Wav2Vec2Processor
@@ -57,23 +58,6 @@ class EmotionModel(Wav2Vec2PreTrainedModel):
         return hidden_states, logits
 
 
-
-# load model from hub
-device = 'cpu'
-model_name = 'audeering/wav2vec2-large-robust-12-ft-emotion-msp-dim'
-processor = Wav2Vec2Processor.from_pretrained(model_name)
-model = EmotionModel.from_pretrained(model_name)
-
-# dummy signal
-sampling_rate = 16000
-signal0 = np.zeros((1, sampling_rate), dtype=np.float32)
-
-# load wav file as signal
-file = load("data/MSP-PODCAST_0001_0049.wav", sr=16000)
-file = [file[0]]
-signal = np.array(file ,dtype=np.float32)
-
-
 def process_func(
     x: np.ndarray,
     sampling_rate: int,
@@ -98,7 +82,39 @@ def process_func(
     return y
 
 
-print(process_func(signal, sampling_rate))
+
+# load model from hub
+device = 'cpu'
+model_name = 'audeering/wav2vec2-large-robust-12-ft-emotion-msp-dim'
+processor = Wav2Vec2Processor.from_pretrained(model_name)
+model = EmotionModel.from_pretrained(model_name)
+
+# dummy signal
+SAMPLING_RATE = 16000
+signal0 = np.zeros((1, SAMPLING_RATE), dtype=np.float32)
+
+# load wav file as signal
+# file = load("data/msp_test/MSP-PODCAST_0001_0049.wav", sr=16000)
+# file = [file[0]]
+# signal = np.array(file ,dtype=np.float32)
+
+#load in multiple wav files into a list and then run through the model
+files = glob.glob("data/msp_test/*.wav")
+signals = [[] for i in range(len(files))] 
+i = 0
+
+for file in files:
+    current_signal = load(file, sr=SAMPLING_RATE)
+    current_signal = [current_signal[0]]
+    signals[i].append(current_signal)
+    i += 1
+
+
+for signal in signals:
+    print(process_func(signal, sampling_rate=SAMPLING_RATE))
+
+
+#print(process_func(signal0, sampling_rate))
 #  Arousal    dominance valence
 # [[0.5460759 0.6062269 0.4043165]]
 
