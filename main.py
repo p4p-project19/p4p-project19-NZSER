@@ -1,3 +1,4 @@
+from unittest import result
 import numpy as np
 import torch
 import torch.nn as nn
@@ -101,17 +102,18 @@ signal_dummy = np.zeros((1, SAMPLING_RATE), dtype=np.float32)
 # load all wav files in a directory into a list
 files = glob.glob("data/msp_test/*.wav")
 signals = [[] for i in range(len(files))] 
-i = 0
 
-for file in files:
+for i, file in enumerate(files):
     current_signal = load(file, sr=SAMPLING_RATE)
     current_signal = [current_signal[0]]
     signals[i].append(current_signal)
-    i += 1
+
+results= [[] for i in range(len(files))]
 
 # process loaded signals
-for signal in signals:
-    print(process_func(signal, sampling_rate=SAMPLING_RATE))
+for j, signal in enumerate(signals):
+    results[j].append(process_func(signal, SAMPLING_RATE))
+    print(results[j][0])
 
 
 #print(process_func(signal_dummy, sampling_rate))
