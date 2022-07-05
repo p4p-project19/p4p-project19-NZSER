@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import glob
-from audio_utils import get_audio_chunks_list
+from audio_utils import get_audio_chunks
 from scipy.io.wavfile import read
 from librosa import load
 from transformers import Wav2Vec2Processor
@@ -93,9 +93,6 @@ model_name = 'audeering/wav2vec2-large-robust-12-ft-emotion-msp-dim'
 processor = Wav2Vec2Processor.from_pretrained(model_name)
 model = EmotionModel.from_pretrained(model_name)
 
-# dummy signal
-signal_dummy = np.zeros((1, SAMPLING_RATE), dtype=np.float32)
-
 # load all wav files in a directory into a list
 files = glob.glob("data/msp_test/*.wav")
 signals = [[] for i in range(len(files))]
@@ -105,22 +102,8 @@ for i, file in enumerate(files):
     current_signal = [current_signal[0]]
     signals[i].append(current_signal)
 
-# split one audio file and process it
-
-# split_audio = get_audio_chunks_list(files[0], chunk_length=20)
-# print(split_audio)
-# split_signals = [[] for i in range(len(split_audio))]
-
-split_file = []
-for i in range(0, len(signals[0], 20)):
-    split_file.append(signals[0][i:20+i])
-
-print(split_file)
-
-results = [[] for i in range(len(signals))]
-
-# for i, signal in enumerate(split_signals):
-#     results[i].append(process_func(signal, SAMPLING_RATE, embeddings=True))
+chunks = get_audio_chunks(signals[0], 20, 16000)
+pass
 
 # results = [[] for i in range(len(files))]
 

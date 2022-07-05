@@ -10,14 +10,12 @@ def get_audio_duration(audio_file):
     audio_file = AudioSegment.from_file(audio_file)
     return audio_file.duration_seconds
 
-def get_audio_chunks_list(audio_file, chunk_length):
-    """
-    .
-    
-    Get the chunks of an audio file.
-    """
-    audio_file = AudioSegment.from_file(audio_file)
-    return make_chunks(audio_file, chunk_length)
+def get_audio_chunks(signal, frame_size, sampling_rate):
+    chunk_size = int(sampling_rate*frame_size*.001) # Chunk size = Sampling rate x frame size
+    split_file = []
+    for i in range(0, len(signal[0][0]), chunk_size):
+        split_file.append(signal[0][0][i:chunk_size+i])
+    return split_file
 
 def export_audio_chunks(audio_file, chunk_length, output_dir):
     """
