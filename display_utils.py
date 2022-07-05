@@ -33,8 +33,8 @@ def quadrant_chart(input_val: list[float], input_aro: list[float], true_val: lis
     frame_size_ms = np.arange(0, val_size)
     
     # ax.scatter(x=data['x'], y=data['y'], c=input_aro, cmap = 'Spectral', edgecolor='darkblue', s=200, zorder=99)
-    ax.scatter(x=data['true_x'], y=data['true_y'], c=frame_size_ms, cmap='Blues', edgecolor='darkblue', s=20, zorder=99)
-    ax.scatter(x=data['pred_x'], y=data['pred_y'], c=frame_size_ms, cmap='Reds', edgecolor='darkred', s=20, zorder=99)
+    true_plot = ax.scatter(x=data['true_x'], y=data['true_y'], c=frame_size_ms, cmap='Blues', edgecolor='darkblue', s=20, zorder=99)
+    pred_plot = ax.scatter(x=data['pred_x'], y=data['pred_y'], c=frame_size_ms, cmap='Reds', edgecolor='darkred', s=20, zorder=99)
 
     # Add annotations for reference
     ax.annotate('Alarmed', (0, 1.1), fontsize=6)
@@ -48,13 +48,20 @@ def quadrant_chart(input_val: list[float], input_aro: list[float], true_val: lis
 
     ax.axvline(0, c='k', lw=1)
     ax.axhline(0, c='k', lw=1)
+    # plt.colorbar(true_plot, location='bottom', label='True emotion vs time')
+    # plt.colorbar(pred_plot, location='bottom', label='Predicted emotion vs time')
+    plt.colorbar(pred_plot, label='Predicted emotion vs time')
+    plt.colorbar(true_plot, label='True emotion vs time')
+    
 
 if __name__ == '__main__':
+    input_val=[-1, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
     quadrant_chart(
         # [-1,-.707, 0, .707, 1, .707, -.707, 0, 0],
         # [0, .707, 0, -.707, 0, .707, -.707, 1, -1],
-        input_val=[-1, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-        input_aro=[-1, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+        input_val=input_val,
+        input_aro=input_val,
+        # input_aro=[-1, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
         true_val=[-1, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
         true_aro=[-0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.01],
     )
@@ -64,3 +71,4 @@ if __name__ == '__main__':
     plt.xlabel('Valence', fontsize=14)
     plt.grid(True, animated=True, linestyle='--', alpha=0.5)
     plt.show()
+    
