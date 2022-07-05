@@ -1,8 +1,8 @@
-from unittest import result
 import numpy as np
 import torch
 import torch.nn as nn
-import os, glob
+import glob
+from audio_utils import get_audio_chunks_list
 from scipy.io.wavfile import read
 from librosa import load
 from transformers import Wav2Vec2Processor
@@ -10,6 +10,7 @@ from transformers.models.wav2vec2.modeling_wav2vec2 import (
     Wav2Vec2Model,
     Wav2Vec2PreTrainedModel,
 )
+
 
 class RegressionHead(nn.Module):
     r"""Classification head."""
@@ -82,7 +83,8 @@ def process_func(
 
     return y
 
-#define constants
+
+# define constants
 SAMPLING_RATE = 16000
 
 # load model from hub
@@ -94,33 +96,45 @@ model = EmotionModel.from_pretrained(model_name)
 # dummy signal
 signal_dummy = np.zeros((1, SAMPLING_RATE), dtype=np.float32)
 
-# load wav file as signal
-# file = load("data/msp_test/MSP-PODCAST_0001_0049.wav", sr=16000)
-# file = [file[0]]
-# signal = np.array(file ,dtype=np.float32)
-
 # load all wav files in a directory into a list
 files = glob.glob("data/msp_test/*.wav")
-signals = [[] for i in range(len(files))] 
+signals = [[] for i in range(len(files))]
 
 for i, file in enumerate(files):
     current_signal = load(file, sr=SAMPLING_RATE)
     current_signal = [current_signal[0]]
     signals[i].append(current_signal)
 
-results= [[] for i in range(len(files))]
+# split one audio file and process it
 
-# process loaded signals
-for j, signal in enumerate(signals):
-    results[j].append(process_func(signal, SAMPLING_RATE))
-    print(results[j][0])
+# split_audio = get_audio_chunks_list(files[0], chunk_length=20)
+# print(split_audio)
+# split_signals = [[] for i in range(len(split_audio))]
+
+split_file = []
+for i in range(0, len(signals[0], 20)):
+    split_file.append(signals[0][i:20+i])
+
+print(split_file)
+
+results = [[] for i in range(len(signals))]
+
+# for i, signal in enumerate(split_signals):
+#     results[i].append(process_func(signal, SAMPLING_RATE, embeddings=True))
+
+# results = [[] for i in range(len(files))]
+
+# # process loaded signals
+# for j, signal in enumerate(signals):
+#     results[j].append(process_func(signal, SAMPLING_RATE))~
+#     print(results[j][0])
 
 
-#print(process_func(signal_dummy, sampling_rate))
+# print(process_func(signal_dummy, sampling_rate))
 #  Arousal    dominance valence
 # [[0.5460759 0.6062269 0.4043165]]
 
-process_func(signal, SAMPLING_RATE, embeddings=True)
+# process_func(signals, SAMPLING_RATE, embeddings=True)
 # Pooled hidden states of last transformer layer
 # [[-0.00752167  0.0065819  -0.00746339 ...  0.00663631  0.00848747
 #   0.00599209]]
