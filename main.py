@@ -3,6 +3,8 @@ import torch
 import torch.nn as nn
 import glob
 from audio_utils import get_audio_chunks
+from display_utils import map_w2v_to_quadrant
+from evaluation import ccc
 from scipy.io.wavfile import read
 from librosa import load
 from transformers import Wav2Vec2Processor
@@ -94,22 +96,47 @@ processor = Wav2Vec2Processor.from_pretrained(model_name)
 model = EmotionModel.from_pretrained(model_name)
 
 # load all wav files in a directory into a list
-files = glob.glob("data/msp_test/*.wav")
+files = glob.glob("data/jl/*.wav")
 signals = [[] for i in range(len(files))]
+
+# Create lists for storing annotations
+true_val = []
+true_aro = []
+
+pred_val = []
+pred_aro = []
 
 for i, file in enumerate(files):
     current_signal = load(file, sr=SAMPLING_RATE)
     current_signal = [current_signal[0]]
     signals[i].append(current_signal)
+    chunks = get_audio_chunks(signal=current_signal[0], frame_size=200, sampling_rate=16000)
+    for chunk in chunks:
+        chunk = [[np.array(chunk, dtype=np.float32)]]
+        result = process_func(chunk, SAMPLING_RATE)
+        result[0][0], result[0][2], result[0][1] = map_w2v_to_quadrant(result[0][0], result[0][2], result[0][1])
+        pred_aro.append(result[0][0])
+        pred_val.append(result[0][2])
+    break
 
-chunks = get_audio_chunks(signals[0], 20, 16000)
-pass
+true_val = [-0.6,-0.6,-0.62,-0.62,-0.58,-0.58,-0.6,-0.6]
+true_aro = [0.86,0.84,0.84,0.85,0.8,0.81,0.85,0.85]
+
+true_val = np.array(true_val)
+true_aro = np.array(true_aro)
+pred_val = np.array(pred_val[1:9])
+pred_aro = np.array(pred_aro[1:9])
+
+ccc_val = ccc(pred_val, true_val)
+ccc_aro = ccc(pred_aro, true_aro)
+print(f'CCC for arousal: {ccc_aro} \nCCC for valence: {ccc_val}')
+
 
 # results = [[] for i in range(len(files))]
 
 # # process loaded signals
 # for j, signal in enumerate(signals):
-#     results[j].append(process_func(signal, SAMPLING_RATE))~
+#     results[j].append(process_func(signal, SAMPLING_RATE))
 #     print(results[j][0])
 
 
