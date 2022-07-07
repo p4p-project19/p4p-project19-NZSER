@@ -1,7 +1,6 @@
+# Utils to process audio files before feeding to the model #
 from pydub import AudioSegment
 from pydub.utils import make_chunks
-
-# Utils to process audio files before feeding to the model #
 
 
 def get_audio_duration(audio_file):
@@ -13,6 +12,11 @@ def get_audio_duration(audio_file):
 
 
 def get_audio_chunks(signal, frame_size, sampling_rate, is_jl=False):
+    """
+    Returns a list of audio chunks from a signal. The chunks are of length
+    specified by the frame_size parameter, and can be trimmed for matching annotations of
+    the JL-Corpus.
+    """
     # Chunk size = Sampling rate x frame size
     chunk_size = int(sampling_rate*frame_size*.001)
     split_file = []
