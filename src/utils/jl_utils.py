@@ -2,17 +2,20 @@ import os
 import glob
 import pandas as pd
 from librosa import load
-from utils.audio_utils import get_audio_chunks
 
 # Constants
 SAMPLING_RATE = 16000
 IS_JL = True
 
+f1_dfs = []
+m2_dfs = []
+
 def load_jl():
     """
     Load the JL-Corpus dataset and annotations.
     """
-
+    f1_dfs = []
+    m2_dfs = []
     file_path = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     root = os.path.dirname(os.path.dirname(file_path))
 
@@ -37,16 +40,25 @@ def load_jl():
     
     f1_aro_df = f1_aro_df[['bundle', 'labels']]
     f1_aro_df = f1_aro_df.rename(columns = {'labels': 'arousal'})
-    f1_val_df = f1_val_df[['bundle', 'labels']]
-    f1_val_df = f1_val_df.rename(columns = {'labels': 'valence'})
+    f1_val_df = f1_val_df['labels']
+    f1_val_df = f1_val_df.rename('valence')
 
     m2_aro_df = m2_aro_df[['bundle', 'labels']]
-    m2_aro_df.rename(columns = {'labels': 'arousal'})
-    m2_val_df = m2_val_df[['bundle', 'labels']]
-    m2_val_df.rename(columns = {'labels': 'valence'})
+    m2_aro_df = m2_aro_df.rename(columns = {'labels': 'arousal'})
+    m2_val_df = m2_val_df['labels']
+    m2_val_df = m2_val_df.rename('valence')
 
     f1_mer_df = pd.concat([f1_aro_df, f1_val_df], axis=1)
     m2_mer_df = pd.concat([m2_aro_df, m2_val_df], axis=1)
-    pass
+    # Remove duplicate bundle names and store in list
+    f1_bdls = list(dict.fromkeys(f1_mer_df['bundle'].tolist()))
+    m2_bdls = list(dict.fromkeys(m2_mer_df['bundle'].tolist()))
+
+    for bdl in f1_bdls:
+        bdl_df = f1_mer_df[f1_mer_df['bundle'] == bdl]
+        f1_dfs.append(bdl_df)
         
-    
+    for bdl in m2_bdls:
+        bdl_df = m2_mer_df[m2_mer_df['bundle'] == bdl]
+        m2_dfs.append(bdl_df)
+    print('Finished loading CSV files.')
