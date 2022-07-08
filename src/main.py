@@ -1,10 +1,11 @@
+import os
 import numpy as np
 import torch
 import torch.nn as nn
 import glob
-from src.utils.audio_utils import get_audio_chunks
-from src.utils.display_utils import map_w2v_to_quadrant
-from src.utils.metrics import ccc
+from utils.audio_utils import get_audio_chunks
+from utils.display_utils import map_w2v_to_quadrant
+from utils.metrics import ccc
 from scipy.io.wavfile import read
 from librosa import load
 from transformers import Wav2Vec2Processor
@@ -93,7 +94,7 @@ IS_JL = True
 # load model from hub
 device = 'cpu'
 # model_name = 'audeering/wav2vec2-large-robust-12-ft-emotion-msp-dim'
-model_name = '../'
+model_name = os.path.dirname(os.path.realpath(__file__))
 processor = Wav2Vec2Processor.from_pretrained(model_name)
 model = EmotionModel.from_pretrained(model_name)
 
