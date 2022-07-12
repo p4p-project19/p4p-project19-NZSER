@@ -20,9 +20,14 @@ def load_recola():
     aro_dfs = []
     for csv_file in aro_csv_files:
         aro_df = pd.read_csv(csv_file, delimiter=';')
+        aro_df = aro_df.drop('FF3', axis=1)
+        aro_df['bundle'] = os.path.basename(csv_file).split('.')[0]
         aro_dfs.append(aro_df)
+        
 
     val_dfs = []
     for csv_file in val_csv_files:
         val_df = pd.read_csv(csv_file, delimiter=';')
+        val_df = val_df.drop('FF3', axis=1)
+        val_df['bundle'] = os.path.basename(csv_file).split('.')[0]
         val_dfs.append(val_df)
