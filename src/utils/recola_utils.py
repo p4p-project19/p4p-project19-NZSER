@@ -38,3 +38,12 @@ def load_recola():
         val_df = val_df.rename(columns = {'FM1 ': 'V1', 'FM2 ':'V2', 'FM3 ':'V3', 'FF1 ': 'V4', 'FF2 ': 'V5'})
         
         mer_dfs.append(pd.concat([aro_dfs[i], val_df], axis=1))
+
+    # Load wav files
+    wav_files = glob.glob(root + "/data/recola/RECOLA-Audio-recordings/*.wav")
+    
+    # Merge wav files and annotations
+    recola_data = []
+    for i, wav_file in enumerate(wav_files):
+        sig = load(wav_file, sr=SAMPLING_RATE)
+        recola_data.append([mer_dfs[i], sig])
