@@ -7,6 +7,9 @@ from librosa import load
 SAMPLING_RATE = 16000
 IS_JL = True
 
+# f1 = female1, m2 = male2, df = dataframe
+f1 = [] # Contains wav files and annotations for female1
+m2 = [] # Contains wav files and annotations for male2
 f1_dfs = []
 m2_dfs = []
 
@@ -19,20 +22,20 @@ def load_jl():
     file_path = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     root = os.path.dirname(os.path.dirname(file_path))
 
-    # load all wav files in a directory into a list
-    files = glob.glob(root + "/data/jl/*.wav")
-    signals = [[] for i in range(len(files))]
+    # # load all wav files in a directory into a list
+    # files = glob.glob(root + "/data/jl/*.wav")
+    # signals = [[] for i in range(len(files))]
 
-    for i, file in enumerate(files):
-        # Load the signal resampled at 16kHz
-        current_signal = load(file, sr=SAMPLING_RATE)
-        current_signal = [current_signal[0]]
-        signals[i].append(current_signal)
+    # for i, file in enumerate(files):
+    #     # Load the signal resampled at 16kHz
+    #     current_signal = load(file, sr=SAMPLING_RATE)
+    #     current_signal = [current_signal[0]]
+    #     signals[i].append(current_signal)
 
     # Load csv files with annotations
     csv_files = glob.glob(root + "/data/jl/*.csv")
     
-    # f1 = female1, m2 = male2
+    # f1 = female1, m2 = male2, df = dataframe
     f1_aro_df = pd.read_csv(csv_files[0])
     f1_val_df = pd.read_csv(csv_files[1])
     m2_aro_df = pd.read_csv(csv_files[2])
@@ -62,3 +65,11 @@ def load_jl():
         bdl_df = m2_mer_df[m2_mer_df['bundle'] == bdl]
         m2_dfs.append(bdl_df)
     print('Finished loading CSV files.')
+
+    for df in f1_dfs:
+        sig = load(root + "/data/jl/female1_all_a_1/" + df['bundle'][0] + '_bndl/' + df['bundle'][0] + ".wav", sr=SAMPLING_RATE)
+        f1.append([df, sig])
+
+    for df in m2_dfs:
+        sig = load(root + "/data/jl/male2_all_a_1/" + df['bundle'][0] + '_bndl/' + df['bundle'][0] + ".wav", sr=SAMPLING_RATE)
+        m2.append([df, sig])
