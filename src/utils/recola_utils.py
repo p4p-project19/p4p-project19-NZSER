@@ -20,14 +20,21 @@ def load_recola():
     aro_dfs = []
     for csv_file in aro_csv_files:
         aro_df = pd.read_csv(csv_file, delimiter=';')
-        aro_df = aro_df.drop('FF3', axis=1)
-        aro_df['bundle'] = os.path.basename(csv_file).split('.')[0]
+
+        aro_df.insert(0, 'bundle', os.path.basename(csv_file).split('.')[0]) # Add filename to dataframe
+        aro_df = aro_df.drop('FF3', axis=1) # Drop FF3 annotator due to lack of range
+        # Rename columns for arousal
+        aro_df = aro_df.rename(columns = {'FM1 ': 'A1', 'FM2 ':'A2', 'FM3 ':'A3', 'FF1 ': 'A4', 'FF2 ': 'A5'})
+        
         aro_dfs.append(aro_df)
         
-
-    val_dfs = []
-    for csv_file in val_csv_files:
+    # Load valence csv files and concatentate arousal and valence dataframes
+    mer_dfs = []
+    for i, csv_file in enumerate(val_csv_files):
         val_df = pd.read_csv(csv_file, delimiter=';')
+
         val_df = val_df.drop('FF3', axis=1)
-        val_df['bundle'] = os.path.basename(csv_file).split('.')[0]
-        val_dfs.append(val_df)
+        # Rename columns for valence
+        val_df = val_df.rename(columns = {'FM1 ': 'V1', 'FM2 ':'V2', 'FM3 ':'V3', 'FF1 ': 'V4', 'FF2 ': 'V5'})
+        
+        mer_dfs.append(pd.concat([aro_dfs[i], val_df], axis=1))
