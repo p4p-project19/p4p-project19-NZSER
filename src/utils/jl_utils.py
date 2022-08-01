@@ -67,9 +67,11 @@ def load_jl():
     print('Finished loading CSV files.')
 
     for df in f1_dfs:
-        sig = load(root + "/data/jl/female1_all_a_1/" + df['bundle'][0] + '_bndl/' + df['bundle'][0] + ".wav", sr=SAMPLING_RATE)
+        sig = load(root + "/data/jl/female1_all_a_1/" + df.iloc[0]['bundle'] + '_bndl/' + df.iloc[0]['bundle'] + ".wav", sr=SAMPLING_RATE)
         f1.append([df, sig])
 
     for df in m2_dfs:
-        sig = load(root + "/data/jl/male2_all_a_1/" + df['bundle'][0] + '_bndl/' + df['bundle'][0] + ".wav", sr=SAMPLING_RATE)
+        sig = load(root + "/data/jl/male2_all_a_1/" + df.iloc[0]['bundle'] + '_bndl/' + df.iloc[0]['bundle'] + ".wav", sr=SAMPLING_RATE)
         m2.append([df, sig])
+    print('Finished loading WAV files.')
+    
