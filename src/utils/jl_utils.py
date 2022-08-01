@@ -64,7 +64,7 @@ def load_jl():
     for bdl in m2_bdls:
         bdl_df = m2_mer_df[m2_mer_df['bundle'] == bdl]
         m2_dfs.append(bdl_df)
-    print('Finished loading CSV files.')
+    print('Finished loading JL-corpus CSV files.')
 
     for df in f1_dfs:
         sig = load(root + "/data/jl/female1_all_a_1/" + df.iloc[0]['bundle'] + '_bndl/' + df.iloc[0]['bundle'] + ".wav", sr=SAMPLING_RATE)
@@ -73,5 +73,5 @@ def load_jl():
     for df in m2_dfs:
         sig = load(root + "/data/jl/male2_all_a_1/" + df.iloc[0]['bundle'] + '_bndl/' + df.iloc[0]['bundle'] + ".wav", sr=SAMPLING_RATE)
         m2.append([df, sig])
-    print('Finished loading WAV files.')
+    print('Finished loading JL-corpus WAV files.')
     

@@ -5,6 +5,8 @@ import torch.nn as nn
 import glob
 from utils.audio_utils import get_audio_chunks
 from utils.display_utils import map_w2v_to_quadrant
+from utils.jl_utils import load_jl
+from utils.recola_utils import load_recola
 from utils.metrics import ccc
 from scipy.io.wavfile import read
 from librosa import load
@@ -14,7 +16,11 @@ from transformers.models.wav2vec2.modeling_wav2vec2 import (
     Wav2Vec2PreTrainedModel,
 )
 
+from utils.semaine_utils import prune_semaine
 
+load_jl()
+load_recola()
+prune_semaine()
 class RegressionHead(nn.Module):
     r"""Classification head."""
 

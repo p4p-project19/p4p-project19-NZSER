@@ -2,8 +2,6 @@ import numpy as np
 from numpy.random import default_rng
 
 import matplotlib.pyplot as plt
-from scipy.stats import pearsonr
-from sklearn.metrics import r2_score
 
 
 def ccc(x, y):
